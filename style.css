@@ -1,0 +1,23 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(49, 49, 49);
+}
+
+main {
+    border: 1px solid rgb(88, 88, 88);
+    background-color: rgb(59, 59, 59);
+}
+
+#box {
+    position: relative;
+    background-color: rgb(212, 125, 43);
+}
