@@ -111,4 +111,5 @@ function clearAllIntervals() {
 function removePreviousBoxes() {
     let previousBoxes = document.querySelectorAll(".falling-box");
     previousBoxes.forEach((box) => box.remove());
+    previousBoxes = []
 }
