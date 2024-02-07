@@ -26,11 +26,13 @@ main {
 }
 
 #wrapper {
+    position: relative;
     border: 1px solid rgb(88, 88, 88);
     background-color: rgb(59, 59, 59);
     display: flex;
     align-items: flex-end;
     max-height: 900px;
+    overflow: hidden;
 }
 
 #container {

@@ -7,12 +7,12 @@ const startBtn = document.getElementById("start-btn")
 box.style.width = "30px";
 box.style.height = "30px";
 wrapper.style.width = "500px";
-wrapper.style.height = "500px";
+wrapper.style.height = "800px";
 
 const boxHeight = parseInt(box.style.height)
 const boxWidth = parseInt(box.style.width)
-const wrapperHeight = parseInt(wrapper.style.height)
-const wrapperWidth = parseInt(wrapper.style.width)
+const wrapperHeight = wrapper.offsetHeight
+const wrapperWidth = wrapper.offsetWidth
 
 container.style.height = `${wrapperHeight / 4}px`;
 container.style.width = `${wrapperWidth}px`;
@@ -24,10 +24,10 @@ box.style.left = `${(wrapperWidth / 2) - (boxWidth / 2)}px`;
 
 const moveSpeed = 20;
 const fallSpeed = 5;
-const intervalFallSpeed = 20;
+const fallSpeedInterval = 20;
 
 startBtn.addEventListener("click", () => {
-    startBtn.style.visibility = "hidden";
+    // startBtn.style.visibility = "hidden";
     spawnFallingBoxes();
 })
 
@@ -51,37 +51,35 @@ window.addEventListener("keypress", (event) => {
         if (boxLeft >= (wrapperWidth - boxWidth - moveSpeed)) box.style.left = `${containerWidth - boxWidth}px`
         else box.style.left = `${boxLeft + moveSpeed}px`
     }
-    // console.log(event)
-    console.log(wrapperHeight - boxHeight)
-    console.log("posTop: ", box.style.top)
-    console.log("container height: ", containerHeight)
 })
 
-wrapper.addEventListener("click", (event) => {
+container.addEventListener("click", (event) => {
     box.style.top = `${event.offsetY - (boxHeight / 2)}px`;
     box.style.left = `${event.offsetX - (boxWidth / 2)}px`;
 })
 
 function spawnFallingBoxes () {
     const fallingBox = document.createElement("div");
-    fallingBox.classList.add("fallingBox");
-    fallingBox.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16)}`
-    wrapper.append(fallingBox)
-    fallingBox.style.top = `${wrapper.getBoundingClientRect().top}px`;
-    fallingBox.style.left = `${wrapper.getBoundingClientRect().left + (Math.floor(Math.random() * wrapperWidth))}px`
 
-    console.log("fall-top: ", fallingBox.style.top)
-    console.log("wrap-bottom: ", wrapper.getBoundingClientRect().bottom)
+    fallingBox.classList.add("fallingBox");
+    fallingBox.style.backgroundColor = `#${Math.floor(Math.random() * 16777215).toString(16).padStart(6, "0")}`
+    wrapper.append(fallingBox)
+    
+    fallingBox.style.top = `${0 - fallingBox.offsetHeight}px`
+    '`${wrapper.offsetTop}px`'
+    fallingBox.style.left = `${Math.floor(Math.random() * (wrapper.offsetWidth - fallingBox.offsetWidth))}px`
 
     const interval = setInterval(() => {
-        if (parseInt(fallingBox.style.top) < wrapper.getBoundingClientRect().bottom) fallingBox.style.top = `${parseInt(fallingBox.style.top) + fallSpeed}px`
-        else clearInterval(interval);
-    }, intervalFallSpeed);
+        if (fallingBox.offsetTop < wrapper.offsetHeight) {
+            fallingBox.style.top = `${fallingBox.offsetTop + fallSpeed}px`
+        }
+        else {
+            clearInterval(interval);
+            fallingBox.remove()
+        }
+    }, fallSpeedInterval);  
+}
 
-    // while (parseInt(fallingBox.style.top) < wrapper.getBoundingClientRect().bottom) {
-    //     setInterval(
-    //     fallingBox.style.top = `${parseInt(fallingBox.style.top) + fallSpeed}px`
-    //     , 500)
-    // }
-    
+function checkCollision () {
+
 }
