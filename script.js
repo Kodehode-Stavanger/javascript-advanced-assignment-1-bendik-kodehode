@@ -5,11 +5,23 @@ const startBtn = document.getElementById("start-btn");
 
 let intervals = [];
 let isGameOver = false;
+
 const movement = {
     moveUp: false,
     moveDown: false,
     moveLeft: false,
     moveRight: false,
+}
+
+const keyActions = {
+    "w": "moveUp",
+    "s": "moveDown",
+    "a": "moveLeft",
+    "d": "moveRight",
+    "ArrowUp": "moveUp",
+    "ArrowDown": "moveDown",
+    "ArrowLeft": "moveLeft",
+    "ArrowRight": "moveRight",
 }
 
 // Dimension settings
@@ -18,6 +30,7 @@ playerBox.style.width = "30px";
 playerBox.style.height = "30px";
 wrapper.style.width = "600px";
 wrapper.style.height = "800px";
+//
 
 const wrapperHeight = wrapper.offsetHeight
 const wrapperWidth = wrapper.offsetWidth
@@ -37,6 +50,7 @@ const playerMoveInterval = 20;
 const fallSpeed = 20;
 const fallSpeedUpdateInterval = 20;
 const fallSpawnRate = 200;
+//
 
 function initPlayerPos() {
     playerBox.style.top = `${wrapperHeight - playerBoxHeight}px`;
@@ -47,17 +61,18 @@ startBtn.addEventListener("click", () => {
     isGameOver = false;
     startBtn.style.visibility = "hidden";
     removePreviousBoxes();
+    initPlayerPos();
+
     const spawnFallBoxInterval = setInterval(() => {
         if (!(isGameOver)) {
             spawnFallingBoxes();
         }
         else clearInterval(spawnFallBoxInterval);
     }, fallSpawnRate)
+
     const movePlayerInterval = setInterval(() => {
         movePlayer();
     }, playerMoveInterval);
-    initPlayerPos();
-    
 });
 
 container.addEventListener("click", (event) => {
@@ -65,40 +80,33 @@ container.addEventListener("click", (event) => {
     playerBox.style.left = `${event.offsetX - (playerBoxWidth / 2)}px`;
 })
 
-window.addEventListener("keydown", (event) => {
-    if (event.key === "w" || event.key === "ArrowUp") movement["moveUp"] = true;
-    if (event.key === "s" || event.key === "ArrowDown") movement["moveDown"] = true;
-    if (event.key === "a" || event.key === "ArrowLeft") movement["moveLeft"] = true;
-    if (event.key === "d" || event.key === "ArrowRight") movement["moveRight"] = true;
-});
+function handleEventKeys(event) {
+    if (!isGameOver) movement[keyActions[event.key]] = (event.type === "keydown");
+}
+window.addEventListener("keydown", handleEventKeys);
+window.addEventListener("keyup", handleEventKeys);
 
-window.addEventListener("keyup", (event) => {
-    if (event.key === "w" || event.key === "ArrowUp") movement["moveUp"] = false;
-    if (event.key === "s" || event.key === "ArrowDown") movement["moveDown"] = false;
-    if (event.key === "a" || event.key === "ArrowLeft") movement["moveLeft"] = false;
-    if (event.key === "d" || event.key === "ArrowRight") movement["moveRight"] = false;
-});
 
 function movePlayer() {
     const playerBoxTop = playerBox.offsetTop;
     const playerBoxLeft = playerBox.offsetLeft;
     
     if (movement["moveUp"]) {
-        if (playerBoxTop < difference) playerBox.style.top = `${difference}px`
-        else playerBox.style.top = `${playerBoxTop - playerBoxStep}px`
-    }
+        if (playerBoxTop < difference) playerBox.style.top = `${difference}px`;
+        else playerBox.style.top = `${playerBoxTop - playerBoxStep}px`;
+    };
     if (movement["moveDown"]) {
-        if (playerBoxTop > (wrapperHeight - playerBoxHeight - playerBoxStep)) playerBox.style.top = `${wrapperHeight - playerBoxHeight}px`
-        else playerBox.style.top = `${playerBoxTop + playerBoxStep}px`
-    }
+        if (playerBoxTop > (wrapperHeight - playerBoxHeight - playerBoxStep)) playerBox.style.top = `${wrapperHeight - playerBoxHeight}px`;
+        else playerBox.style.top = `${playerBoxTop + playerBoxStep}px`;
+    };
     if (movement["moveLeft"]) {
-        if (playerBoxLeft - playerBoxStep < 0) playerBox.style.left = "0px"
-        else playerBox.style.left = `${playerBoxLeft - playerBoxStep}px`
-    }
+        if (playerBoxLeft - playerBoxStep < 0) playerBox.style.left = "0px";
+        else playerBox.style.left = `${playerBoxLeft - playerBoxStep}px`;
+    };
     if (movement["moveRight"]) {
-        if (playerBoxLeft > (wrapperWidth - playerBoxWidth - playerBoxStep)) playerBox.style.left = `${container.offsetWidth - playerBoxWidth}px`
-        else playerBox.style.left = `${playerBoxLeft + playerBoxStep}px`
-    }
+        if (playerBoxLeft > (wrapperWidth - playerBoxWidth - playerBoxStep)) playerBox.style.left = `${container.offsetWidth - playerBoxWidth}px`;
+        else playerBox.style.left = `${playerBoxLeft + playerBoxStep}px`;
+    };
 };
 
 function spawnFallingBoxes () {
