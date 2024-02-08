@@ -54,15 +54,14 @@ main {
     position: absolute;
 }
 
-/* #game-over {
+#game-over {
     position:absolute;
-    transition: all 0.3s ease-out
-} */
+    
+}
 
 #game-over:before {
-    font-size: 40px;
-    scale: 1;
-    transition: all 0.3s ease-out
+    content: "Game Over!";
+    white-space: nowrap;
 }
 
 #game-over:after {
