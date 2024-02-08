@@ -2,15 +2,20 @@ const playerBox = document.getElementById("player-box");
 const wrapper = document.getElementById("wrapper");
 const container = document.getElementById("container");
 const startBtn = document.getElementById("start-btn");
+
 let intervals = [];
 let gameOver = false;
+let moveUp = false;
+let moveDown = false;
+let moveLeft = false;
+let moveRight = false;
 
-// Adjustable dimensions
+// Dimention settings
 const playAreaRatio = 4;
 playerBox.style.width = "30px";
 playerBox.style.height = "30px";
 wrapper.style.width = "600px";
-wrapper.style.height = "600px";
+wrapper.style.height = "800px";
 
 const wrapperHeight = wrapper.offsetHeight
 const wrapperWidth = wrapper.offsetWidth
@@ -24,10 +29,15 @@ const playerBoxWidth = playerBox.offsetWidth;
 playerBox.style.top = `${wrapperHeight - playerBoxHeight}px`;
 playerBox.style.left = `${(wrapperWidth / 2) - (playerBoxWidth / 2)}px`;
 
-const playerBoxStep = 20;
-const fallSpeed = 5;
-const fallSpeedInterval = 20;
-const boxSpawnRate = 500;
+// Speed settings
+const playerBoxStep = 5;
+const fallSpeed = 20;
+const fallSpeedUpdateInterval = 20;
+const boxSpawnRate = 200;
+
+const moveInterval = setInterval(() => {
+    movePlayer();
+}, 5);
 
 startBtn.addEventListener("click", () => {
     startBtn.style.visibility = "hidden";
@@ -44,28 +54,41 @@ container.addEventListener("click", (event) => {
 })
 
 window.addEventListener("keydown", (event) => {
+    if (event.key === "w" || event.key === "ArrowUp") moveUp = true;
+    if (event.key === "s" || event.key === "ArrowDown") moveDown = true;
+    if (event.key === "a" || event.key === "ArrowLeft") moveLeft = true;
+    if (event.key === "d" || event.key === "ArrowRight") moveRight = true;
+});
+
+window.addEventListener("keyup", (event) => {
+    if (event.key === "w" || event.key === "ArrowUp") moveUp = false;
+    if (event.key === "s" || event.key === "ArrowDown") moveDown = false;
+    if (event.key === "a" || event.key === "ArrowLeft") moveLeft = false;
+    if (event.key === "d" || event.key === "ArrowRight") moveRight = false;
+});
+
+function movePlayer() {
     const playerBoxTop = playerBox.offsetTop;
     const playerBoxLeft = playerBox.offsetLeft;
     const difference = wrapperHeight - containerHeight;
-    console.log(parseInt(playerBox.style.height))
 
-    if (event.key === "w" || event.key === "ArrowUp") {
-        if (playerBoxTop < (difference + playerBoxHeight)) playerBox.style.top = `${difference}px`
+    if (moveUp) {
+        if (playerBoxTop < difference) playerBox.style.top = `${difference}px`
         else playerBox.style.top = `${playerBoxTop - playerBoxStep}px`
     }
-    if (event.key === "s" || event.key === "ArrowDown") {
+    if (moveDown) {
         if (playerBoxTop > (wrapperHeight - playerBoxHeight - playerBoxStep)) playerBox.style.top = `${wrapperHeight - playerBoxHeight}px`
         else playerBox.style.top = `${playerBoxTop + playerBoxStep}px`
     }
-    if (event.key === "a" || event.key == "ArrowLeft") {
+    if (moveLeft) {
         if (playerBoxLeft - playerBoxStep < 0) playerBox.style.left = "0px"
         else playerBox.style.left = `${playerBoxLeft - playerBoxStep}px`
     }
-    if (event.key === "d" || event.key === "ArrowRight") {
-        if (playerBoxLeft >= (wrapperWidth - playerBoxWidth - playerBoxStep)) playerBox.style.left = `${container.offsetWidth - playerBoxWidth}px`
+    if (moveRight) {
+        if (playerBoxLeft > (wrapperWidth - playerBoxWidth - playerBoxStep)) playerBox.style.left = `${container.offsetWidth - playerBoxWidth}px`
         else playerBox.style.left = `${playerBoxLeft + playerBoxStep}px`
     }
-})
+};
 
 function spawnFallingBoxes () {
     const fallingBox = document.createElement("div");
@@ -91,7 +114,7 @@ function spawnFallingBoxes () {
             clearInterval(intervalID);
             fallingBox.remove()
         }
-    }, fallSpeedInterval); 
+    }, fallSpeedUpdateInterval); 
 
     intervals.push(intervalID)
 }
