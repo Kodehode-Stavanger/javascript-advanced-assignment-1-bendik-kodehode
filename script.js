@@ -38,8 +38,8 @@ updateFormData();
 const formDataObject = Object.fromEntries(new FormData(diffBtnForm));
 console.log(formDataObject)
 
-// Dimension settings
-const playAreaRatio = 4;
+// Dimension settings (Adjustable)
+const playAreaheightRatio = 4;     // 4 = 25%
 playerBox.style.width = "30px";
 playerBox.style.height = "30px";
 wrapper.style.width = "600px";
@@ -49,7 +49,7 @@ wrapper.style.height = "800px";
 const wrapperHeight = wrapper.offsetHeight
 const wrapperWidth = wrapper.offsetWidth
 
-container.style.height = `${wrapperHeight / playAreaRatio}px`;
+container.style.height = `${wrapperHeight / playAreaheightRatio}px`;
 container.style.width = `${wrapperWidth}px`;
 const containerHeight = container.offsetHeight;
 const difference = wrapperHeight - containerHeight;
@@ -82,7 +82,9 @@ container.addEventListener("click", (event) => {
 })
 
 function handleEventKeys(event) {
-    if (!isGameOver) movement[keyActions[event.key]] = (event.type === "keydown");
+    if (!isGameOver) {
+        movement[keyActions[event.key]] = (event.type === "keydown");
+    };
 }
 window.addEventListener("keydown", handleEventKeys);
 window.addEventListener("keyup", handleEventKeys);
@@ -103,10 +105,8 @@ function startGame() {
             }
             else clearInterval(spawnFallBoxInterval);
         }, fallSpawnRate)
-    
-        const movePlayerInterval = setInterval(() => {
-            movePlayer();
-        }, playerMoveInterval);
+
+        movePlayerInterval();
     }, 500)
 
 }
@@ -132,6 +132,13 @@ function movePlayer() {
         else playerBox.style.left = `${playerBoxLeft + playerBoxStep}px`;
     };
 };
+
+function movePlayerInterval() {
+    const playerInterval = setInterval(() => {
+        movePlayer();
+        if (isGameOver) clearInterval(playerInterval);
+    }, playerMoveInterval);
+}
 
 function spawnFallingBoxes () {
     const fallingBox = document.createElement("div");
