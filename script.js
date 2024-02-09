@@ -2,16 +2,20 @@ const playerBox = document.getElementById("player-box");
 const wrapper = document.getElementById("wrapper");
 const container = document.getElementById("container");
 const startBtn = document.getElementById("start-btn");
+const score = document.getElementById("score")
+const menuWindow = document.getElementById("menu");
+const diffBtnForm = document.getElementById("diff-btn-form");
 
 let intervals = [];
 let isGameOver = false;
+let scoreCounter = 0;
 
 const movement = {
     moveUp: false,
     moveDown: false,
     moveLeft: false,
     moveRight: false,
-}
+};
 
 const keyActions = {
     "w": "moveUp",
@@ -22,7 +26,17 @@ const keyActions = {
     "ArrowDown": "moveDown",
     "ArrowLeft": "moveLeft",
     "ArrowRight": "moveRight",
-}
+};
+
+
+function updateFormData() {
+    const formData = new FormData(diffBtnForm);
+};
+
+updateFormData();
+
+const formDataObject = Object.fromEntries(new FormData(diffBtnForm));
+console.log(formDataObject)
 
 // Dimension settings
 const playAreaRatio = 4;
@@ -40,12 +54,15 @@ container.style.width = `${wrapperWidth}px`;
 const containerHeight = container.offsetHeight;
 const difference = wrapperHeight - containerHeight;
 
+menuWindow.style.top = `${(difference / 2) - (menuWindow.offsetHeight / 2)}px`
+menuWindow.style.left = `${(wrapperWidth / 2) - (menuWindow.offsetWidth / 2)}px`;
+
 const playerBoxHeight = playerBox.offsetHeight;
 const playerBoxWidth = playerBox.offsetWidth;
 initPlayerPos();
 
 // Speed settings
-const playerBoxStep = 5;
+const playerBoxStep = 10;
 const playerMoveInterval = 20;
 const fallSpeed = 20;
 const fallSpeedUpdateInterval = 20;
@@ -57,23 +74,7 @@ function initPlayerPos() {
     playerBox.style.left = `${(wrapperWidth / 2) - (playerBoxWidth / 2)}px`;
 };
 
-startBtn.addEventListener("click", () => {
-    isGameOver = false;
-    startBtn.style.visibility = "hidden";
-    removePreviousBoxes();
-    initPlayerPos();
-
-    const spawnFallBoxInterval = setInterval(() => {
-        if (!(isGameOver)) {
-            spawnFallingBoxes();
-        }
-        else clearInterval(spawnFallBoxInterval);
-    }, fallSpawnRate)
-
-    const movePlayerInterval = setInterval(() => {
-        movePlayer();
-    }, playerMoveInterval);
-});
+startBtn.addEventListener("click", () => startGame());
 
 container.addEventListener("click", (event) => {
     playerBox.style.top = `${event.offsetY - (playerBoxHeight / 2) + (wrapperHeight - containerHeight)}px`;
@@ -86,6 +87,29 @@ function handleEventKeys(event) {
 window.addEventListener("keydown", handleEventKeys);
 window.addEventListener("keyup", handleEventKeys);
 
+function startGame() {
+    menuWindow.classList.remove("fadeIn")
+    menuWindow.classList.add("fadeOut");
+    menuWindow.style.opacity = "0"
+
+    setTimeout(function() {
+        isGameOver = false;
+        removePreviousBoxes();
+        initPlayerPos();
+    
+        const spawnFallBoxInterval = setInterval(() => {
+            if (!(isGameOver)) {
+                spawnFallingBoxes();
+            }
+            else clearInterval(spawnFallBoxInterval);
+        }, fallSpawnRate)
+    
+        const movePlayerInterval = setInterval(() => {
+            movePlayer();
+        }, playerMoveInterval);
+    }, 500)
+
+}
 
 function movePlayer() {
     const playerBoxTop = playerBox.offsetTop;
@@ -126,7 +150,8 @@ function spawnFallingBoxes () {
         }
         else {
             clearInterval(fallBoxInterval);
-            fallingBox.remove()
+            fallingBox.remove();
+            updateScore();
         }
     }, fallSpeedUpdateInterval); 
 
@@ -148,6 +173,11 @@ function checkCollision (fallingBox) {
     }
 };
 
+function updateScore() {
+    scoreCounter += 1;
+    score.textContent = `Score: ${scoreCounter}`
+}
+
 function clearFallBoxIntervals() {
     intervals.forEach((fallBoxInterval) => clearInterval(fallBoxInterval))
     intervals = [];
@@ -160,9 +190,10 @@ function removePreviousBoxes() {
 };
 
 function gameOver() {
+    menuWindow.classList.remove("fadeOut");
+    menuWindow.classList.add("fadeIn");
+    menuWindow.style.opacity = "100";
     isGameOver = true;
     for (let key in movement) movement[key] = false;
     clearFallBoxIntervals();
-    alert("Game over!");
-    startBtn.style.visibility = "visible";
 }
