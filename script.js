@@ -28,18 +28,12 @@ const keyActions = {
     "ArrowRight": "moveRight",
 };
 
+// const formData = new FormData(diffBtnForm);
+// const formDataObject = Object.fromEntries(new FormData(diffBtnForm));
 
-// function updateFormData() {
-//     const formData = new FormData(diffBtnForm);
-// };
-
-// updateFormData();
-
-const formDataObject = Object.fromEntries(new FormData(diffBtnForm));
-console.log(formDataObject)
 
 // Dimension settings (Adjustable)
-const playAreaheightRatio = 4;     // 4 = 25%
+const playAreaheightRatio = 4;     // 4 == 25%
 playerBox.style.width = "30px";
 playerBox.style.height = "30px";
 wrapper.style.width = "600px";
@@ -64,7 +58,7 @@ initPlayerPos();
 // Speed settings
 const playerBoxStep = 10;
 const playerMoveInterval = 10;
-const fallSpeed = 10;
+let fallSpeed = 10;
 const fallSpeedUpdateInterval = 10;
 const fallSpawnRate = 200;
 //
@@ -151,7 +145,6 @@ function spawnFallingBoxes () {
 
     const fallBoxInterval = setInterval(() => {
         if (fallingBox.offsetTop < wrapper.offsetHeight) {
-            console.log(checkCollision(fallingBox))
             if (checkCollision(fallingBox)) gameOver();
             else fallingBox.style.top = `${fallingBox.offsetTop + fallSpeed}px`
         }
