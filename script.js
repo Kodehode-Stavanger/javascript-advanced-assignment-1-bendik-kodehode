@@ -88,6 +88,8 @@ function startGame() {
     menuWindow.classList.add("fadeOut");
     menuWindow.style.opacity = "0"
 
+    score.textContent = `Score: 0`
+
     setTimeout(function() {
         isGameOver = false;
         removePreviousBoxes();
@@ -102,7 +104,7 @@ function startGame() {
 
         movePlayerInterval();
     }, 500)
-}
+};
 
 function movePlayer() {
     const playerBoxTop = playerBox.offsetTop;
@@ -131,7 +133,7 @@ function movePlayerInterval() {
         movePlayer();
         if (isGameOver) clearInterval(playerInterval);
     }, playerMoveInterval);
-}
+};
 
 function spawnFallingBoxes () {
     const fallingBox = document.createElement("div");
@@ -156,7 +158,7 @@ function spawnFallingBoxes () {
     }, fallSpeedUpdateInterval); 
 
     intervals.push(fallBoxInterval)
-}
+};
 
 function checkCollision (fallingBox) {
     const checkTop = () => playerBox.offsetTop < (fallingBox.offsetTop + fallingBox.offsetHeight);
@@ -173,11 +175,10 @@ function updateScore() {
     score.textContent = `Score: ${scoreCounter}`;
 };
 
-function handleHighScore() {
-    let highScore = 0
-    if (scoreCounter > highScore) highScore = scoreCounter;
-}
-
+// function handleHighScore() {
+//     let highScore = 0
+//     if (scoreCounter > highScore) highScore = scoreCounter;
+// }
 
 function clearFallBoxIntervals() {
     intervals.forEach((fallBoxInterval) => clearInterval(fallBoxInterval))
@@ -197,4 +198,4 @@ function gameOver() {
     isGameOver = true;
     for (let key in movement) movement[key] = false;
     clearFallBoxIntervals();
-}
+};
