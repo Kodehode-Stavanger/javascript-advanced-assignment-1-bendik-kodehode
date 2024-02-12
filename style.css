@@ -28,6 +28,10 @@ h2 {
     color: white;
 }
 
+#high-score {
+    color: white;
+}
+
 #score {
     color: white;
     font-size: 1.2rem;
@@ -35,6 +39,7 @@ h2 {
 
 #score-container {
     width: 100%;
+    margin-top: 5px;
 }
 
 #wrapper {

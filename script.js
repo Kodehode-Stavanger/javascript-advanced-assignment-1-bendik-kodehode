@@ -29,11 +29,11 @@ const keyActions = {
 };
 
 
-function updateFormData() {
-    const formData = new FormData(diffBtnForm);
-};
+// function updateFormData() {
+//     const formData = new FormData(diffBtnForm);
+// };
 
-updateFormData();
+// updateFormData();
 
 const formDataObject = Object.fromEntries(new FormData(diffBtnForm));
 console.log(formDataObject)
@@ -63,9 +63,9 @@ initPlayerPos();
 
 // Speed settings
 const playerBoxStep = 10;
-const playerMoveInterval = 20;
-const fallSpeed = 20;
-const fallSpeedUpdateInterval = 20;
+const playerMoveInterval = 10;
+const fallSpeed = 10;
+const fallSpeedUpdateInterval = 10;
 const fallSpawnRate = 200;
 //
 
@@ -74,7 +74,7 @@ function initPlayerPos() {
     playerBox.style.left = `${(wrapperWidth / 2) - (playerBoxWidth / 2)}px`;
 };
 
-startBtn.addEventListener("click", () => startGame());
+startBtn.addEventListener("click", startGame);
 
 container.addEventListener("click", (event) => {
     playerBox.style.top = `${event.offsetY - (playerBoxHeight / 2) + (wrapperHeight - containerHeight)}px`;
@@ -108,7 +108,6 @@ function startGame() {
 
         movePlayerInterval();
     }, 500)
-
 }
 
 function movePlayer() {
@@ -152,6 +151,7 @@ function spawnFallingBoxes () {
 
     const fallBoxInterval = setInterval(() => {
         if (fallingBox.offsetTop < wrapper.offsetHeight) {
+            console.log(checkCollision(fallingBox))
             if (checkCollision(fallingBox)) gameOver();
             else fallingBox.style.top = `${fallingBox.offsetTop + fallSpeed}px`
         }
@@ -166,24 +166,25 @@ function spawnFallingBoxes () {
 }
 
 function checkCollision (fallingBox) {
-    const checkTop = () => {
-        return (playerBox.offsetTop < (fallingBox.offsetTop + fallingBox.offsetHeight))
-    };
+    const checkTop = () => playerBox.offsetTop < (fallingBox.offsetTop + fallingBox.offsetHeight);
+    const checkBottom = () => (playerBox.offsetTop + playerBoxHeight) > fallingBox.offsetTop;
+    const checkLeft = () => playerBox.offsetLeft < (fallingBox.offsetLeft + fallingBox.offsetWidth);
+    const checkRight = () => (playerBox.offsetLeft + playerBox.offsetWidth) > fallingBox.offsetLeft;
 
-    if (((playerBox.offsetLeft < (fallingBox.offsetLeft + fallingBox.offsetWidth)) && checkTop())
-        && 
-        (((playerBox.offsetLeft + playerBox.offsetWidth) > fallingBox.offsetLeft) && checkTop())){
-        return true;
-    }
-    else {
-        return false;
-    }
+    if (checkTop() && checkBottom() && checkLeft() && checkRight()) return true;
+    else return false;
 };
 
 function updateScore() {
     scoreCounter += 1;
-    score.textContent = `Score: ${scoreCounter}`
+    score.textContent = `Score: ${scoreCounter}`;
+};
+
+function handleHighScore() {
+    let highScore = 0
+    if (scoreCounter > highScore) highScore = scoreCounter;
 }
+
 
 function clearFallBoxIntervals() {
     intervals.forEach((fallBoxInterval) => clearInterval(fallBoxInterval))
