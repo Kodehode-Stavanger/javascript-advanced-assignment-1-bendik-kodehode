@@ -2,7 +2,8 @@ const playerBox = document.getElementById("player-box");
 const wrapper = document.getElementById("wrapper");
 const container = document.getElementById("container");
 const startBtn = document.getElementById("start-btn");
-const score = document.getElementById("score")
+const score = document.getElementById("score");
+const highScore = document.getElementById("high-score");
 const menuWindow = document.getElementById("menu");
 const diffBtnForm = document.getElementById("diff-btn-form");
 
@@ -27,9 +28,6 @@ const keyActions = {
     "ArrowLeft": "moveLeft",
     "ArrowRight": "moveRight",
 };
-
-// const formData = new FormData(diffBtnForm);
-// const formDataObject = Object.fromEntries(new FormData(diffBtnForm));
 
 
 // Dimension settings (Adjustable)
@@ -60,8 +58,22 @@ const playerBoxStep = 10;
 const playerMoveInterval = 10;
 let fallSpeed = 10;
 const fallSpeedUpdateInterval = 10;
-const fallSpawnRate = 200;
+let fallSpawnRate = 200;
 //
+
+diffBtnForm.addEventListener("change", (e) => {
+    switch(e.target.value) {
+        case "easy":
+            fallSpawnRate = 300;
+            break;
+        case "medium":
+            fallSpawnRate = 200;
+            break
+        case "hard":
+            fallSpawnRate = 100;
+            break
+    };
+});
 
 function initPlayerPos() {
     playerBox.style.top = `${wrapperHeight - playerBoxHeight}px`;
@@ -88,7 +100,8 @@ function startGame() {
     menuWindow.classList.add("fadeOut");
     menuWindow.style.opacity = "0"
 
-    score.textContent = `Score: 0`
+    scoreCounter = 0;
+    score.textContent = `Score: 0`;
 
     setTimeout(function() {
         isGameOver = false;
@@ -170,19 +183,19 @@ function checkCollision (fallingBox) {
     else return false;
 };
 
+function clearFallBoxIntervals() {
+    intervals.forEach((fallBoxInterval) => clearInterval(fallBoxInterval))
+    intervals = [];
+};
+
 function updateScore() {
     scoreCounter += 1;
     score.textContent = `Score: ${scoreCounter}`;
 };
 
-// function handleHighScore() {
-//     let highScore = 0
-//     if (scoreCounter > highScore) highScore = scoreCounter;
-// }
-
-function clearFallBoxIntervals() {
-    intervals.forEach((fallBoxInterval) => clearInterval(fallBoxInterval))
-    intervals = [];
+function handleHighScore() {
+    let highScore = 0
+    if (scoreCounter > highScore) highScore = scoreCounter;
 };
 
 function removePreviousBoxes() {
