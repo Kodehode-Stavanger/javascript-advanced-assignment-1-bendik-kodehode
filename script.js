@@ -3,13 +3,15 @@ const wrapper = document.getElementById("wrapper");
 const container = document.getElementById("container");
 const startBtn = document.getElementById("start-btn");
 const score = document.getElementById("score");
-const highScore = document.getElementById("high-score");
+const highScoreContent = document.getElementById("high-score");
 const menuWindow = document.getElementById("menu");
 const diffBtnForm = document.getElementById("diff-btn-form");
 
 let intervals = [];
 let isGameOver = false;
 let scoreCounter = 0;
+let highScore = 0;
+updateHighScore();
 
 const movement = {
     moveUp: false,
@@ -91,6 +93,7 @@ container.addEventListener("click", (event) => {
 })
 
 function handleEventKeys(event) {
+    event.preventDefault();
     if (!isGameOver) {
         movement[keyActions[event.key]] = (event.type === "keydown");
     };
@@ -196,9 +199,14 @@ function updateScore() {
     score.textContent = `Score: ${scoreCounter}`;
 };
 
-function handleHighScore() {
-    let highScore = 0
-    if (scoreCounter > highScore) highScore = scoreCounter;
+function updateHighScore() {
+    let retrievedHighScore = localStorage.getItem("highscore");
+    if (retrievedHighScore) highScore = JSON.parse(retrievedHighScore);
+    if (scoreCounter > highScore) {
+        highScore = scoreCounter;
+        localStorage.setItem("highscore", highScore); 
+    };
+    highScoreContent.textContent = `High Score: ${highScore}` 
 };
 
 function removePreviousBoxes() {
@@ -214,4 +222,5 @@ function gameOver() {
     isGameOver = true;
     for (let key in movement) movement[key] = false;
     clearFallBoxIntervals();
+    updateHighScore();
 };
