@@ -8,6 +8,7 @@ const menuWindow = document.getElementById("menu");
 const diffBtnForm = document.getElementById("diff-btn-form");
 
 let intervals = [];
+let playerInterval;
 let isGameOver = false;
 let scoreCounter = 0;
 let highScore = 0;
@@ -86,6 +87,13 @@ function initPlayerPos() {
 };
 
 startBtn.addEventListener("click", startGame);
+// window.addEventListener("keypress", (e) => {
+//     if (e.key === " " && isGameOver) {
+//         gameOver();
+//         startGame();
+//         console.log(e)
+//     }
+// });
 
 container.addEventListener("click", (event) => {
     playerBox.style.top = `${event.offsetY - (playerBoxHeight / 2) + (wrapperHeight - containerHeight)}px`;
@@ -148,9 +156,8 @@ function movePlayer() {
 };
 
 function movePlayerInterval() {
-    const playerInterval = setInterval(() => {
+    playerInterval = setInterval(() => {
         movePlayer();
-        if (isGameOver) clearInterval(playerInterval);
     }, playerMoveInterval);
 };
 
@@ -222,5 +229,6 @@ function gameOver() {
     isGameOver = true;
     for (let key in movement) movement[key] = false;
     clearFallBoxIntervals();
+    clearInterval(playerInterval);
     updateHighScore();
 };
