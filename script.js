@@ -65,12 +65,15 @@ diffBtnForm.addEventListener("change", (e) => {
     switch(e.target.value) {
         case "easy":
             fallSpawnRate = 300;
+            fallSpeed = 5
             break;
         case "medium":
             fallSpawnRate = 200;
+            fallSpeed =  10;
             break
         case "hard":
             fallSpawnRate = 100;
+            fallSpeed = 15;
             break
     };
 });
@@ -124,7 +127,7 @@ function movePlayer() {
     const playerBoxLeft = playerBox.offsetLeft;
     
     if (movement["moveUp"]) {
-        if (playerBoxTop < difference) playerBox.style.top = `${difference}px`;
+        if (playerBoxTop - playerBoxStep < difference) playerBox.style.top = `${difference}px`;
         else playerBox.style.top = `${playerBoxTop - playerBoxStep}px`;
     };
     if (movement["moveDown"]) {
